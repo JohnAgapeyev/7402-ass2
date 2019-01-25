@@ -2,6 +2,7 @@
 
 import math
 import sys
+import enchant
 
 def decryptMessage(key, message):
     # Determine the number of columns
@@ -46,14 +47,26 @@ if len(sys.argv) != 3:
 data = open(sys.argv[1]).read()
 keylen = int(sys.argv[2])
 
-print("Data is {}", data)
+print(data)
+
+dictionary = enchant.Dict("en_US")
 
 ciphertext = encryptMessage(keylen, data)
 plaintext = decryptMessage(keylen, ciphertext);
 
-for i in range(1, keylen):
+max_words = 0
+best_key = 0;
+
+for i in range(1, len(ciphertext)):
     tmp = decryptMessage(i, ciphertext)
-    print(tmp)
+    count = 0
+    for word in tmp.split():
+        if dictionary.check(word):
+            count += 1
+    if count > max_words:
+        best_key = i
+        max_words = count
 
 print(plaintext)
+print("Best key was", best_key)
 
