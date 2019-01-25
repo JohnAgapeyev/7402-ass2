@@ -1,12 +1,7 @@
 #!/usr/bin/python3
 
-import math, sys, getopt
-
-#--------------------------------------------------------------------------------------
-
- # The transposition decrypt function will simulate the "columns" and
- # "rows" of the grid that the plaintext is written on by using a list
- # of strings. First, we need to calculate a few values.
+import math
+import sys
 
 def decryptMessage(key, message):
     # Determine the number of columns
@@ -26,7 +21,6 @@ def decryptMessage(key, message):
         if (col == nCols) or (col == nCols - 1 and row >= nRows - nUnused):
             col = 0
             row += 1
-
     return ''.join(plaintext)
 
 def encryptMessage (key, message):
@@ -46,26 +40,17 @@ def encryptMessage (key, message):
     # Convert the ciphertext list into a single string value and return it.
     return ''.join (ciphertext)
 
-def main (argv):
-    try:
-        opts, args = getopt.getopt (argv, "ht:k:",["ptext=", "keysize="])
-    except getopt.getoptError:
-        sys.exit (1)
+if len(sys.argv) != 3:
+    print('Usage: ./main.py <plaintext_filename> <keysize>')
+    sys.exit(1)
+data = open(sys.argv[1]).read()
+keylen = int(sys.argv[2])
 
-    if len (sys.argv[1:]) < 4:
-        print ('Usage: ./trencode.py -t <plaintext> -k <keysize>')
-        sys.exit(2)
-    for opt, arg in opts:
-        if opt == '-h':
-            print ('Usage: ./trencode.py -t <plaintext> -k <keysize>')
-            sys.exit ()
-        elif opt in ("-t", "--ptext"):
-            plaintext = arg
-        elif opt in ("-k", "--keysize"):
-            keylen = int (arg)
+print("Data is {}", data)
 
-    # call the crypto function
-    ciphertext = encryptMessage (keylen, plaintext)
-    # Print the ciphertext
-    print(ciphertext)
+# call the crypto function
+ciphertext = encryptMessage(keylen, data)
+plaintext = decryptMessage(keylen, ciphertext);
+# Print the ciphertext
+print(plaintext)
 
