@@ -3,6 +3,8 @@
 import math
 import sys
 import enchant
+import itertools
+from multiprocessing import Pool
 
 def decryptMessage(key, message):
     # Determine the number of columns
@@ -41,29 +43,44 @@ def encryptMessage (key, message):
     # Convert the ciphertext list into a single string value and return it.
     return ''.join (ciphertext)
 
+dictionary = enchant.Dict("en_US")
+
+def try_key(args):
+    key, ciphertext = args
+    tmp = decryptMessage(key, ciphertext)
+    count = 0
+    for word in tmp.split():
+        if dictionary.check(word):
+            count += 1
+    return count
+
 if len(sys.argv) != 3:
     print('Usage: ./main.py <plaintext_filename> <keysize>')
     sys.exit(1)
 data = open(sys.argv[1]).read()
 keylen = int(sys.argv[2])
 
-dictionary = enchant.Dict("en_US")
-
 ciphertext = encryptMessage(keylen, data)
 
 max_words = 0
-best_key = 0;
+best_key = 0
 
-for i in range(1, len(ciphertext)):
-    tmp = decryptMessage(i, ciphertext)
-    count = 0
-    for word in tmp.split():
-        if dictionary.check(word):
-            count += 1
-    if count > max_words:
-        best_key = i
-        max_words = count
+#for i in range(1, len(ciphertext)):
+    #tmp = decryptMessage(i, ciphertext)
+    #count = 0
+    #for word in tmp.split():
+        #if dictionary.check(word):
+            #count += 1
+    #if count > max_words:
+        #best_key = i
+        #max_words = count
+
+#print(decryptMessage(best_key, ciphertext))
+#print("Best key was", best_key)
+
+res_list = Pool().map(try_key, zip(range(1, len(ciphertext)), itertools.repeat(ciphertext)))
+print(res_list)
+best_key = res_list.index(max(res_list)) + 1
 
 print(decryptMessage(best_key, ciphertext))
 print("Best key was", best_key)
-
