@@ -48,9 +48,12 @@ keylen = int(sys.argv[2])
 
 print("Data is {}", data)
 
-# call the crypto function
 ciphertext = encryptMessage(keylen, data)
 plaintext = decryptMessage(keylen, ciphertext);
-# Print the ciphertext
+
+for i in range(1, keylen):
+    tmp = decryptMessage(i, ciphertext)
+    print(tmp)
+
 print(plaintext)
 
