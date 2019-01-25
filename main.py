@@ -47,12 +47,9 @@ if len(sys.argv) != 3:
 data = open(sys.argv[1]).read()
 keylen = int(sys.argv[2])
 
-print(data)
-
 dictionary = enchant.Dict("en_US")
 
 ciphertext = encryptMessage(keylen, data)
-plaintext = decryptMessage(keylen, ciphertext);
 
 max_words = 0
 best_key = 0;
@@ -67,6 +64,6 @@ for i in range(1, len(ciphertext)):
         best_key = i
         max_words = count
 
-print(plaintext)
+print(decryptMessage(best_key, ciphertext))
 print("Best key was", best_key)
 
