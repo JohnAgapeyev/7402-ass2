@@ -58,6 +58,9 @@ if len(sys.argv) != 3:
 
 data = open(sys.argv[1]).read()
 keylen = int(sys.argv[2])
+if keylen <= 0:
+    print('Key size must be greater than zero')
+    sys.exit(1)
 
 dictionary = enchant.Dict("en_US")
 
