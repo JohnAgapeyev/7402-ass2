@@ -62,6 +62,10 @@ if keylen <= 0:
     print('Key size must be greater than zero')
     sys.exit(1)
 
+if keylen >= len(data):
+    print('Key size must be smaller than the length of the plaintext')
+    sys.exit(1)
+
 dictionary = enchant.Dict("en_US")
 
 ciphertext = encryptMessage(keylen, data)
